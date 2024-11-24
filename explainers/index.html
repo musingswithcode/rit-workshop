@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RIT Creative Coding Workshop | Musings with Code</title>
+
+  <!-- Tangle -->
+  <script src="./Tangle.js"></script>
+
+  <!-- TangleKit -->
+  <link rel="stylesheet" href="./TangleKit/TangleKit.css">
+  <script src="./TangleKit/mootools.js"></script>
+  <script src="./TangleKit/sprintf.js"></script>
+  <script src="./TangleKit/BVTouchable.js"></script>
+  <script src="./TangleKit/TangleKit.js"></script>
+
+  <!-- P5 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
+
+  <!-- Tachyons -->
+  <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+  <style>
+    canvas { border: 1px solid #eee; }
+    a { color: #db5461; }
+    .no-select { user-select: none; }
+  </style>
+
+  <script>
+    var theme = {
+      accent: "#ff6300",
+      guide: "#96ccff",
+      dark: "#555",
+      gray: "#eee"
+    }
+  </script>
+</head>
+
+<body class="garamond mw7 ml-auto mr-auto mv5 near-black">
+  <h1 class="f1 lh-title measure">Reference Guide</h1>
+
+  <p class="f4 lh-copy"><strong>Coordinates.</strong> Think of the canvas as similar to a graph sheet: each point is denoted by two numbers, the x coordinate and the y coordinte. The x axis runs from top-left to top-right and the y axis runs from top-left to bottom-left.</p>
+  <div id="coordinates" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select">
+  createCanvas(400, 200)
+</code>
+
+<script>
+  var root = document.getElementById("coordinates")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.x = 100
+        this.y = 100
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      sketch.stroke(theme.dark)
+      sketch.strokeWeight(2)
+      sketch.line(0, 0, sketch.width, 0)
+      sketch.line(0, 0, 0, sketch.height)
+
+      sketch.fill(theme.dark)
+      sketch.noStroke()
+      sketch.text(`(0, 0)`, 5, 15)
+
+      for (var x = 0; x < sketch.width; x += 10) {
+        sketch.stroke(theme.gray)
+        sketch.strokeWeight(0.5)
+        sketch.line(x, 0, x, sketch.height)
+      }
+
+      for (var y = 0; y < sketch.height; y += 10) {
+        sketch.stroke(theme.gray)
+        sketch.strokeWeight(0.5)
+        sketch.line(0, y, sketch.width, y)
+      }
+
+      var x = sketch.mouseX 
+      var y = sketch.mouseY
+
+      var withinBounds = x >= 0 && x < sketch.width && y >= 0 && y < sketch.height
+      if (withinBounds) {
+        sketch.stroke(theme.guide)
+        sketch.strokeWeight(1)
+        sketch.line(x, 0, x, sketch.height)
+        sketch.line(0, y, sketch.width, y)
+
+        sketch.fill(theme.accent)
+        sketch.noStroke()
+        sketch.circle(x, y, 6)
+
+        sketch.fill(theme.dark)
+        sketch.text(`(x: ${x | 0}, y: ${y | 0})`, x + 10, y - 10)
+      }
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy"><strong>Points.</strong> You can draw a point with <code class="f5">point(x, y)</code>, where x is the x-coordinate and y is the y-coordinate. See: <a href="https://p5js.org/reference/p5/point/" target="_blank"><code class="f5">point</code></a>.</p>
+  <div id="shapes-point" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select">
+  point(<span class="TKAdjustableNumber" data-var="x" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y" data-min="0" data-max="200"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-point")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.x = 100
+        this.y = 100
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var x = tangle.getValue("x")
+      var y = tangle.getValue("y")
+
+      sketch.stroke(theme.guide)
+      sketch.line(x, 0, x, sketch.height)
+      sketch.line(0, y, sketch.width, y)
+
+      sketch.fill(theme.accent)
+      sketch.noStroke()
+      sketch.circle(x, y, 6)
+
+      sketch.fill(theme.dark)
+      sketch.text(`(${x}, ${y})`, x + 10, y - 10)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy"><strong>Lines.</strong> To draw a line specifies the coordinates for its start and end points. Use <code class="f5">line(x1, y1, x2, y2)</code>, where x1, y1 are the coordinates of the start point and x2, y2 are the coordinates of the end point.  See: <a href="https://p5js.org/reference/p5/line/" target="_blank"><code class="f5">line</code></a>.</p>
+  <div id="shapes-line" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select">
+  line(<span class="TKAdjustableNumber" data-var="x1" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y1" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="x2" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y2" data-min="0" data-max="200"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-line")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.x1 = 100
+        this.y1 = 100
+        this.x2 = 300
+        this.y2 = 100
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var x1 = tangle.getValue("x1")
+      var y1 = tangle.getValue("y1")
+      var x2 = tangle.getValue("x2")
+      var y2 = tangle.getValue("y2")
+
+      sketch.stroke(theme.accent)
+      sketch.line(x1, y1, x2, y2)
+
+      sketch.fill(theme.guide)
+      sketch.noStroke()
+      sketch.circle(x1, y1, 6)
+      sketch.circle(x2, y2, 6)
+
+      sketch.fill(theme.dark)
+      sketch.textAlign(sketch.CENTER)
+      sketch.text(`(${x1}, ${y1})`, x1, y1 + 20)
+      sketch.text(`(${x2}, ${y2})`, x2, y2 + 20)
+    }
+  }, root)
+</script>
+  </div>
+
+  <p class="f4 lh-copy"><strong>Circles and ellipses.</strong> More complex shapes like circles and ellipses require both coordinates and sizes. To create a circle, specify its center coordinates and diameter. See: <a href="https://p5js.org/reference/p5/circle/" target="_blank"><code class="f5">circle</code></a>, <a href="https://p5js.org/reference/p5/ellipse/" target="_blank"><code class="f5">ellipse</code></a>.</p>
+  <div id="shapes-circle" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select">
+  circle(<span class="TKAdjustableNumber" data-var="cx" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="cy" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="d" data-min="0" data-max="400"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-circle")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.cx = 200
+        this.cy = 100
+        this.d = 100
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var cx = tangle.getValue("cx")
+      var cy = tangle.getValue("cy")
+      var d = tangle.getValue("d")
+
+      sketch.noFill()
+      sketch.stroke(theme.accent)
+      sketch.circle(cx, cy, d)
+
+      sketch.fill(theme.guide)
+      sketch.noStroke()
+      sketch.circle(cx, cy, 6)
+      sketch.stroke(theme.guide)
+      sketch.line(cx - d/2, cy, cx + d/2, cy)
+
+      sketch.fill(theme.dark)
+      sketch.noStroke()
+      sketch.textAlign(sketch.CENTER)
+      sketch.text(`(${cx}, ${cy})`, cx, cy + 20)
+      sketch.textAlign(sketch.LEFT)
+      sketch.text(`d = ${d}`, cx + d/2 + 15, cy + 5)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy">To create an ellipse, specify its center coordinates, width and height.</p>
+  <div id="shapes-ellipse" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select">
+  ellipse(<span class="TKAdjustableNumber" data-var="cx" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="cy" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="w" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="h" data-min="0" data-max="400"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-ellipse")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.cx = 200
+        this.cy = 100
+        this.w = 100
+        this.h = 100
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var cx = tangle.getValue("cx")
+      var cy = tangle.getValue("cy")
+      var w = tangle.getValue("w")
+      var h = tangle.getValue("h")
+
+      sketch.noFill()
+      sketch.stroke(theme.accent)
+      sketch.ellipse(cx, cy, w, h)
+
+      sketch.fill(theme.guide)
+      sketch.noStroke()
+      sketch.circle(cx, cy, 6)
+      sketch.stroke(theme.guide)
+      sketch.line(cx - w/2, cy, cx + w/2, cy)
+      sketch.line(cx, cy - h/2, cx, cy + h/2)
+
+      sketch.fill(theme.dark)
+      sketch.noStroke()
+      sketch.textAlign(sketch.CENTER)
+      sketch.text(`(${cx}, ${cy})`, cx, cy + 20)
+      sketch.text(`h = ${h}`, cx, cy - h/2 - 15)
+      sketch.textAlign(sketch.LEFT)
+      sketch.text(`w = ${w}`, cx + w/2 + 15, cy + 5)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy"><strong>Squares, rectangles, and quadrilaterals.</strong> Squares and rectangles are drawn by an anchor point which by default is the top-left corner. Squares also require a size and rectangles require a width and height. See: <a href="https://p5js.org/reference/p5/square/" target="_blank"><code class="f5">square</code></a>, <a href="https://p5js.org/reference/p5/rect/" target="_blank"><code class="f5">rect</code></a>, <a href="https://p5js.org/reference/p5/quad/" target="_blank"><code class="f5">quad</code></a>.</p>
+  <div id="shapes-square" class="flex ba b--light-gray pa3 br2 mb4">
+
+<code class="pre f5 dark-gray w-50 no-select lh-copy">
+  square(<span class="TKAdjustableNumber" data-var="cx" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="cy" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="s" data-min="0" data-max="400"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-square")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.cx = 200
+        this.cy = 100
+        this.s = 75
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var cx = tangle.getValue("cx")
+      var cy = tangle.getValue("cy")
+      var s = tangle.getValue("s")
+
+      sketch.noFill()
+      sketch.stroke(theme.accent)
+      sketch.square(cx, cy, s)
+
+      sketch.fill(theme.guide)
+      sketch.noStroke()
+      sketch.circle(cx, cy, 6)
+
+      sketch.fill(theme.dark)
+      sketch.noStroke()
+      sketch.text(`(${cx}, ${cy})`, cx - 30, cy - 10)
+      sketch.text(`s = ${s}`, cx + s + 10, cy + s/2)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <div id="shapes-rect" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select lh-copy">
+  rect(<span class="TKAdjustableNumber" data-var="cx" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="cy" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="w" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="h" data-min="0" data-max="400"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-rect")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.cx = 200
+        this.cy = 100
+        this.w = 100
+        this.h = 75
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var cx = tangle.getValue("cx")
+      var cy = tangle.getValue("cy")
+      var w = tangle.getValue("w")
+      var h = tangle.getValue("h")
+
+      sketch.noFill()
+      sketch.stroke(theme.accent)
+      sketch.rect(cx, cy, w, h)
+
+      sketch.fill(theme.guide)
+      sketch.noStroke()
+      sketch.circle(cx, cy, 6)
+
+      sketch.fill(theme.dark)
+      sketch.noStroke()
+      sketch.text(`(${cx}, ${cy})`, cx - 30, cy - 10)
+      sketch.text(`w = ${w}`, cx + w + 10, cy + h/2)
+      sketch.text(`h = ${h}`, cx + w/2 - 15, cy + h + 20)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy">Quads are different in that they require you to specify coordinates for all four corners.</p>
+  <div id="shapes-quad" class="flex ba b--light-gray pa3 br2">
+
+    <code class="pre f5 dark-gray w-50 no-select lh-copy">
+      quad(
+        <span class="TKAdjustableNumber" data-var="x1" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y1" data-min="0" data-max="200"></span>,
+        <span class="TKAdjustableNumber" data-var="x2" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y2" data-min="0" data-max="200"></span>,
+        <span class="TKAdjustableNumber" data-var="x3" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y3" data-min="0" data-max="200"></span>,
+        <span class="TKAdjustableNumber" data-var="x4" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="y4" data-min="0" data-max="200"></span>
+      )
+    </code>
+    
+    <script>
+      var root = document.getElementById("shapes-quad")
+    
+      new p5((sketch) => {
+        var tangle = new Tangle(root, {
+          initialize() {
+            this.x1 = 200 - 75
+            this.y1 = 100
+            this.x2 = 200
+            this.y2 = 100 - 75
+            this.x3 = 200 + 75
+            this.y3 = 100
+            this.x4 = 200
+            this.y4 = 100 + 75
+          },
+          update() {}
+        })
+    
+        sketch.setup = () => {
+          sketch.createCanvas(400, 200)
+        }
+    
+        sketch.draw = () => {
+          sketch.background(255)
+    
+          var x1 = tangle.getValue("x1")
+          var y1 = tangle.getValue("y1")
+          var x2 = tangle.getValue("x2")
+          var y2 = tangle.getValue("y2")
+          var x3 = tangle.getValue("x3")
+          var y3 = tangle.getValue("y3")
+          var x4 = tangle.getValue("x4")
+          var y4 = tangle.getValue("y4")
+    
+          sketch.noFill()
+          sketch.stroke(theme.accent)
+          sketch.quad(x1, y1, x2, y2, x3, y3, x4, y4)
+    
+          sketch.fill(theme.guide)
+          sketch.noStroke()
+          sketch.circle(x1, y1, 6)
+          sketch.circle(x2, y2, 6)
+          sketch.circle(x3, y3, 6)
+          sketch.circle(x4, y4, 6)
+    
+          sketch.fill(theme.dark)
+          sketch.noStroke()
+          sketch.text(`(${x1}, ${y1})`, x1 - 30, y1 - 15)
+          sketch.text(`(${x2}, ${y2})`, x2 - 30, y2 - 15)
+          sketch.text(`(${x3}, ${y3})`, x3 - 30, y3 - 15)
+          sketch.text(`(${x4}, ${y4})`, x4 - 30, y4 + 15)
+        }
+      }, root)
+    </script>
+    
+  </div>
+
+  <p class="f4 lh-copy"><strong>Arcs.</strong> Similar to ellipses, arcs require a center point, width and height along with the start and end angle. Angles in p5 are defined in terms of radians, but I find degrees easier to use. You can set the angle mode to use degrees with <code class="f5">angleMode(DEGREES)</code>. See: <a href="https://p5js.org/reference/p5/angleMode/" target="_blank"><code class="f5">angleMode</code></a>, <a href="https://p5js.org/reference/p5/arc/" target="_blank"><code class="f5">arc</code></a>.</p>
+  <div id="shapes-arc" class="flex ba b--light-gray pa3 br2 mb4">
+
+<code class="pre f5 dark-gray w-50 no-select lh-copy">
+  angleMode(DEGREES)
+  arc(<span class="TKAdjustableNumber" data-var="cx" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="cy" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="w" data-min="0" data-max="400"></span>, <span class="TKAdjustableNumber" data-var="h" data-min="0" data-max="200"></span>, <span class="TKAdjustableNumber" data-var="startAngle" data-min="-360" data-max="360"></span>, <span class="TKAdjustableNumber" data-var="endAngle" data-min="-360" data-max="360"></span>)
+</code>
+
+<script>
+  var root = document.getElementById("shapes-arc")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.cx = 200
+        this.cy = 100
+        this.w = 100
+        this.h = 100
+        this.startAngle = 0
+        this.endAngle = 180
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+      sketch.angleMode(sketch.DEGREES)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var cx = tangle.getValue("cx")
+      var cy = tangle.getValue("cy")
+      var w = tangle.getValue("w")
+      var h = tangle.getValue("h")
+      var startAngle = tangle.getValue("startAngle")
+      var endAngle = tangle.getValue("endAngle")
+
+      sketch.fill(theme.guide)
+      sketch.noStroke()
+      sketch.circle(cx, cy, 6)
+      sketch.noFill()
+      sketch.stroke(theme.guide)
+      sketch.line(cx - w/2, cy, cx + w/2, cy)
+      sketch.line(cx, cy - h/2, cx, cy + h/2)
+      sketch.strokeWeight(0.75)
+      sketch.ellipse(cx, cy, w, h)
+
+      sketch.noFill()
+      sketch.stroke(theme.accent)
+      sketch.strokeWeight(1)
+      sketch.arc(cx, cy, w, h, startAngle, endAngle)
+
+      sketch.fill(theme.dark)
+      sketch.noStroke()
+      sketch.textAlign(sketch.CENTER)
+      sketch.text(`(${cx}, ${cy})`, cx, cy + 20)
+      sketch.text(`h = ${h}`, cx, cy - h/2 - 15)
+      sketch.textAlign(sketch.LEFT)
+      sketch.text(`w = ${w}`, cx + w/2 + 15, cy + 5)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy"><strong>Fill and stroke.</strong> You can add color to shapes by setting fill and stroke values. Colors are represented as red, blue and green values, each ranging between 0 and 255. Note that fill and stroke settings are sticky: after setting these values, any shape drawn after will have these colors unless you explicitly change them. See: <a href="https://p5js.org/reference/p5/fill/" target="_blank"><code class="f5">fill</code></a>, <a href="https://p5js.org/reference/p5/noFill/" target="_blank"><code class="f5">noFill</code></a>, <a href="https://p5js.org/reference/p5/stroke/" target="_blank"><code class="f5">stroke</code></a>, <a href="https://p5js.org/reference/p5/noStroke/" target="_blank"><code class="f5">noStroke</code></a>,  <a href="https://p5js.org/reference/p5/strokeWeight/" target="_blank"><code class="f5">strokeWeight</code></a>.</p>
+  <div id="colors" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select lh-copy">
+  fill(<span class="TKAdjustableNumber" data-var="fr" data-min="0" data-max="255"></span>, <span class="TKAdjustableNumber" data-var="fg" data-min="0" data-max="255"></span>, <span class="TKAdjustableNumber" data-var="fb" data-min="0" data-max="255"></span>)
+  stroke(<span class="TKAdjustableNumber" data-var="sr" data-min="0" data-max="255"></span>, <span class="TKAdjustableNumber" data-var="sg" data-min="0" data-max="255"></span>, <span class="TKAdjustableNumber" data-var="sb" data-min="0" data-max="255"></span>)
+  strokeWeight(<span class="TKAdjustableNumber" data-var="sw" data-min="0" data-max="20"></span>)
+
+  circle(120, 100, 100)
+  square(200, 50, 100)
+</code>
+
+<script>
+  var root = document.getElementById("colors")
+
+  new p5((sketch) => {
+    var tangle = new Tangle(root, {
+      initialize() {
+        this.fr = 253
+        this.fg = 202
+        this.fb = 64
+
+        this.sr = 51
+        this.sg = 161
+        this.sb = 253
+
+        this.sw = 2
+      },
+      update() {}
+    })
+
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var fr = tangle.getValue("fr")
+      var fg = tangle.getValue("fg")
+      var fb = tangle.getValue("fb")
+
+      var sr = tangle.getValue("sr")
+      var sg = tangle.getValue("sg")
+      var sb = tangle.getValue("sb")
+
+      var sw = tangle.getValue("sw")
+
+      sketch.fill(fr, fg, fb)
+      sketch.stroke(sr, sg, sb)
+      sketch.strokeWeight(sw)
+
+      sketch.circle(120, 100, 100)
+      sketch.square(200, 50, 100)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <p class="f4 lh-copy">
+    <strong>Frame rate and frame count.</strong> Frame rate determines the number of frames drawn per second. Higher the frame rate, faster the draw loop. You can set the frame rate by using <code class="f5">frameRate(fps)</code>, where fps is the target frames per second. See: <a href="https://p5js.org/reference/p5/frameRate/" target="_blank"><code class="f5">frameRate</code></a>, <a href="https://p5js.org/reference/p5/frameCount/" target="_blank"><code class="f5">frameCount</code></a>.
+  </p>
+  <div id="framerate" class="flex ba b--light-gray pa3 br2">
+    <code class="pre f5 dark-gray w-50 no-select">
+      frameRate(<span class="TKAdjustableNumber" data-var="fps" data-min="1" data-max="60"></span>)
+    </code>
+    
+    <script>
+      var root = document.getElementById("framerate")
+    
+      new p5((sketch) => {
+        var tangle = new Tangle(root, {
+          initialize() {
+            this.fps = 60
+          },
+          update() {}
+        })
+        var cx = 0
+
+        sketch.setup = () => {
+          sketch.createCanvas(400, 200)
+        }
+    
+        sketch.draw = () => {
+          sketch.background(255)
+
+          var fps = tangle.getValue("fps")
+          sketch.frameRate(fps)
+
+          sketch.fill(theme.guide)
+          sketch.noStroke()
+          sketch.circle(cx, 150, 30)
+          cx += 1
+          if (cx > sketch.width) cx = 0
+    
+          sketch.fill(theme.dark)
+          sketch.textAlign(sketch.CENTER, sketch.CENTER)
+          sketch.textSize(16)
+          sketch.text('frameRate', sketch.width / 2, sketch.height / 2 - 30)
+          sketch.textSize(30)
+          sketch.text(fps, sketch.width / 2, sketch.height / 2)
+        }
+      }, root)
+    </script>  
+  </div>
+  <p class="f4 lh-copy">
+    The variable <code class="f5">frameCount</code> is automatically set by p5.js inside the draw loop and is incremented  by 1 each time the draw loop runs.
+  </p>
+  <div id="framecount" class="flex ba b--light-gray pa3 br2">
+    <code class="pre f5 dark-gray w-50 no-select">
+      frameRate(<span class="TKAdjustableNumber" data-var="fps" data-min="1" data-max="60"></span>)
+    </code>
+    
+    <script>
+      var root = document.getElementById("framecount")
+    
+      new p5((sketch) => {
+        var tangle = new Tangle(root, {
+          initialize() {
+            this.fps = 60
+          },
+          update() {}
+        })
+        var cx = 0
+
+        sketch.setup = () => {
+          sketch.createCanvas(400, 200)
+        }
+    
+        sketch.draw = () => {
+          sketch.background(255)
+
+          var fps = tangle.getValue("fps")
+          sketch.frameRate(fps)
+
+          sketch.fill(theme.guide)
+          sketch.noStroke()
+          sketch.circle(cx, 150, 30)
+          cx += 1
+          if (cx > sketch.width) cx = 0
+    
+          sketch.fill(theme.dark)
+          sketch.textAlign(sketch.CENTER, sketch.CENTER)
+          sketch.textSize(16)
+          sketch.text('frameCount', sketch.width / 2, sketch.height / 2 - 30)
+          sketch.textSize(30)
+          sketch.text(sketch.frameCount, sketch.width / 2, sketch.height / 2)
+        }
+      }, root)
+    </script>  
+  </div>
+
+  <p class="f4 lh-copy"><strong>Mouse coordinates.</strong> The x and y position of the mouse is read and set by p5.js to the variables <code class="f5">mouseX</code> and <code class="f5">mouseY</code> by p5 inside the draw loop.  See: <a href="https://p5js.org/reference/p5/mouseX/" target="_blank"><code class="f5">mouseX</code></a>, <a href="https://p5js.org/reference/p5/mouseY/" target="_blank"><code class="f5">mouseY</code></a>.</p>
+  <div id="mouse" class="flex ba b--light-gray pa3 br2">
+
+<code class="pre f5 dark-gray w-50 no-select">
+  mouseX
+  mouseY
+</code>
+
+<script>
+  var root = document.getElementById("mouse")
+
+  new p5((sketch) => {
+    sketch.setup = () => {
+      sketch.createCanvas(400, 200)
+    }
+
+    sketch.draw = () => {
+      sketch.background(255)
+
+      var x = sketch.mouseX 
+      var y = sketch.mouseY
+
+      var withinBounds = x >= 0 && x < sketch.width && y >= 0 && y < sketch.height
+      if (withinBounds) {
+        sketch.stroke(theme.guide)
+        sketch.strokeWeight(1)
+        sketch.line(x, 0, x, sketch.height)
+        sketch.line(0, y, sketch.width, y)
+
+        sketch.fill(theme.accent)
+        sketch.noStroke()
+        sketch.circle(x, y, 6)
+      }
+
+      sketch.fill(theme.dark)
+      sketch.textAlign(sketch.CENTER, sketch.CENTER)
+      sketch.textSize(16)
+      sketch.text('mouseX', sketch.width / 2 - 100, sketch.height / 2 - 30)
+      sketch.textSize(30)
+      sketch.text(sketch.mouseX | 0, sketch.width / 2 - 100, sketch.height / 2)
+      sketch.textSize(16)
+      sketch.text('mouseY', sketch.width / 2 + 100, sketch.height / 2 - 30)
+      sketch.textSize(30)
+      sketch.text(sketch.mouseY | 0, sketch.width / 2 + 100, sketch.height / 2)
+    }
+  }, root)
+</script>
+
+  </div>
+
+  <footer class="flex items-center justify-between bt pv3 mt5 gray">
+    <p class="f5">Made by Priti Pandurangan, Ajith Ranka</p>
+    <div>
+      <a class="link pointer dim mr2 gray" href="https://priti.is" target="_blank">
+        Website
+      </a>
+      <a class="link pointer dim gray" href="https://www.instagram.com/wherepritiis" target="_blank">
+        Instagram
+      </a>
+    </div>
+  </footer>
+</body>
+
+</html>
